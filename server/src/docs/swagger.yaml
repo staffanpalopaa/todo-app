@@ -1,0 +1,265 @@
+openapi: 3.0.3
+info:
+  title: Todo App API Specification
+  version: '54'
+  description: API documentation for the Todo App bounded context.
+servers:
+  - url: /api/v1
+    description: Development Server
+tags:
+  - name: TodoApp
+    description: Operations related to the TodoApp bounded context.
+paths:
+  /create-task:
+    post:
+      summary: Create Task
+      description: Executes the "Create Task" command. ...
+      operationId: createTask
+      tags:
+        - TodoApp
+      responses:
+        '200':
+          description: 'OK: The resource was updated successfully.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskRequest'
+  /complete-task:
+    post:
+      summary: Complete Task
+      description: Executes the "Complete Task" command. ...
+      operationId: completeTask
+      tags:
+        - TodoApp
+      responses:
+        '200':
+          description: 'OK: The resource was updated successfully.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompleteTaskRequest'
+  /delete-task:
+    post:
+      summary: Delete Task
+      description: Executes the "Delete Task" command. ...
+      operationId: deleteTask
+      tags:
+        - TodoApp
+      responses:
+        '200':
+          description: 'OK: The resource was updated successfully.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteTaskRequest'
+  /list-all-tasks:
+    get:
+      summary: List All Tasks
+      description: Retrieves data based on the "List All Tasks" query. This is a synchronous query operation.
+      operationId: listAllTasks
+      tags:
+        - TodoApp
+      responses:
+        '200':
+          description: Successful retrieval of data.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /list-active-tasks:
+    get:
+      summary: List Active Tasks
+      description: Retrieves data based on the "List Active Tasks" query. This is a synchronous query operation.
+      operationId: listActiveTasks
+      tags:
+        - TodoApp
+      responses:
+        '200':
+          description: Successful retrieval of data.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: An error occurred.
+    Task:
+      type: object
+      description: Represents a Task in the system.
+      properties:
+        taskID:
+          type: string
+          description: The Task ID of the Task.
+          example: TASK-001
+        taskTitle:
+          type: string
+          description: The Task Title of the Task.
+          example: Buy Groceries
+        taskDescription:
+          type: string
+          description: The Task Description of the Task.
+          example: Milk, bread, eggs
+        dueDate:
+          type: string
+          description: The Due Date of the Task.
+          example: '2023-12-01'
+        priorityLevel:
+          type: string
+          description: The Priority Level of the Task.
+          example: High
+        categoryTags:
+          type: string
+          description: The Category Tags of the Task.
+          example: Personal, Shopping
+        currentStatus:
+          type: string
+          description: The Current Status of the Task.
+          example: Pending
+        completionNotes:
+          type: string
+          description: The Completion Notes of the Task.
+          example: ''
+        timeSpent:
+          type: string
+          description: The Time Spent of the Task.
+          example: ''
+        actualCompletionDate:
+          type: string
+          description: The Actual Completion Date of the Task.
+          example: ''
+        satisfactionRating:
+          type: string
+          description: The Satisfaction Rating of the Task.
+          example: ''
+        reasonForDeletion:
+          type: string
+          description: The Reason for Deletion of the Task.
+          example: ''
+        archivedStatus:
+          type: string
+          description: The Archived Status of the Task.
+          example: 'false'
+      required:
+        - taskID
+        - taskTitle
+        - currentStatus
+    CreateTaskRequest:
+      type: object
+      properties:
+        taskTitle:
+          type: string
+          example: Buy Groceries
+        taskDescription:
+          type: string
+          example: Milk, bread, eggs
+        dueDate:
+          type: string
+          example: '2023-12-01'
+        priorityLevel:
+          type: string
+          example: High
+        categoryTags:
+          type: string
+          example: Personal, Shopping
+      required:
+        - taskTitle
+    CompleteTaskRequest:
+      type: object
+      properties:
+        taskID:
+          type: string
+          example: TASK-001
+        completionNotes:
+          type: string
+          example: ''
+        timeSpent:
+          type: string
+          example: ''
+        actualCompletionDate:
+          type: string
+          example: ''
+        satisfactionRating:
+          type: string
+          example: ''
+      required:
+        - taskID
+    DeleteTaskRequest:
+      type: object
+      properties:
+        taskID:
+          type: string
+          example: TASK-001
+        confirmDeletion:
+          type: string
+        reasonForDeletion:
+          type: string
+          example: ''
+        archivedStatus:
+          type: string
+          example: 'false'
+      required:
+        - taskID
+  parameters:
+    TaskId:
+      name: taskID
+      in: path
+      required: true
+      description: The unique identifier for the Task.
+      schema:
+        type: string
+  responses:
+    BadRequest:
+      description: 'Bad Request: The server cannot or will not process the request due to something that is perceived to be a client error.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: 'Not Found: The server can not find the requested resource.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalServerError:
+      description: 'Internal Server Error: The server has encountered a situation it doesn''t know how to handle.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
